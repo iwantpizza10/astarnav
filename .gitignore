@@ -1,0 +1,4 @@
+/target
+
+# /osm contains *.osm files w/ map nodes for anyone trying to run this before i get to making the readme
+/osm
