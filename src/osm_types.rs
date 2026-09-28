@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{collections::HashSet, str::FromStr};
 
 #[derive(Debug)]
 pub enum OsmError {
@@ -11,6 +11,7 @@ pub struct Node {
     pub lat: f64,
     pub lon: f64,
     pub tags: Vec<Tag>,
+    pub neighbors: HashSet<i64>,
 }
 
 impl Default for Node {
@@ -20,6 +21,7 @@ impl Default for Node {
             lat: f64::MIN,
             lon: f64::MIN,
             tags: vec![],
+            neighbors: HashSet::new(),
         }
     }
 }

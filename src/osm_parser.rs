@@ -194,3 +194,34 @@ pub fn parse_osm(osm_data: BufReader<File>) -> Result<(MappedI64Item<osm::Node>,
 
     Ok((nodes, ways, relations))
 }
+
+pub fn parse_neighbors(nodes: MappedI64Item<osm::Node>, ways: &MappedI64Item<osm::Way>) -> MappedI64Item<osm::Node> {
+    let mut nodes = nodes;
+
+    for (_, way) in ways {
+        for node_idx in 0..way.nodes.len() {
+            if node_idx == 0 {
+                let node_id = way.nodes[node_idx];
+
+                if let Some(node) = nodes.get_mut(&node_id) {
+                    node.neighbors.insert(way.nodes[1]);
+                }
+            } else if node_idx == way.nodes.len() - 1 {
+                let node_id = way.nodes[node_idx];
+
+                if let Some(node) = nodes.get_mut(&node_id) {
+                    node.neighbors.insert(way.nodes[way.nodes.len() - 2]); // -2 because -1 is just the last element lmao
+                }
+            } else {
+                let node_id = way.nodes[node_idx];
+
+                if let Some(node) = nodes.get_mut(&node_id) {
+                    node.neighbors.insert(way.nodes[node_idx - 1]);
+                    node.neighbors.insert(way.nodes[node_idx + 1]);
+                }
+            }
+        }
+    }
+
+    nodes
+}
